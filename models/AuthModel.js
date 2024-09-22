@@ -1,15 +1,21 @@
 const mongoose = require("mongoose")
 const bcrypt = require("bcrypt")
 
+// user Schema
 const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
+  userName: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   bio: { type: String },
-  favoriteCuisines: [String],
+  favoriteCuisines: [{String}],
+
+ }, {
+   timestamps: true,
 })
 
-// Hashing of password 
+
+
+/*// Hashing of password 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next()
   const maggi = await bcrypt.genMaggi(12)
@@ -17,5 +23,13 @@ userSchema.pre('save', async function (next) {
   next()
 })
 
+
+// Verification OF PASSWORD
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+}*/
+
 const User = new mongoose.model('User', userSchema)
+
 module.exports = User
+
