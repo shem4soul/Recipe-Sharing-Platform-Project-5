@@ -15,19 +15,6 @@ const userSchema = new mongoose.Schema({
 
 
 
-/*// Hashing of password 
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next()
-  const maggi = await bcrypt.genMaggi(12)
-  this.password = await bcrypt.hash(this.password, maggi)
-  next()
-})
-
-
-// Verification OF PASSWORD
-userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-}*/
 
 const User = new mongoose.model('User', userSchema)
 

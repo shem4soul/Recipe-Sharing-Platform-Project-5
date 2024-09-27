@@ -1,89 +1,85 @@
 const User = require("../models/AuthModel")
 
-
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 
 
-userSchema.pre('save', async function(next) {
-  if (this.isModified('password')) {
-      this.password = await bcrypt.hash(this.password, 10)
+
+
+
+const registerFunction = async (req, res) => {
+  try {
+    const { userName, email, password } = req.body
+
+    //check for exiting user
+    const alreadyExisting = await Users.findOne({ email })
+
+    if (alreadyExisting) {
+      res
+        .status(400)
+        .json({ message: "This email already has an existing account" })
+    }
+
+    //hashed password
+
+    const hashedPassword = await bcrypt.hash(password, 10)
+
+    const newUser = new Users({
+      
+      userName,
+      email,
+      password: hashedPassword,
+    })
+
+    await newUser.save()
+
+    return res.status(200).json({
+      message: "Account Created",
+      user: newUser,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
-  next()
-})
+};
 
-const login = async (req, res) => {
-  const { email, password } = req.body
-  const user = await User.findOne({ email })
+const loginFunction = async (req, res) => {
+  try {
+    const { email, password } = req.body
 
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    return res.status(400).send('Invalid credentials')
+    const user = await Users.findOne({ email })
+
+    if (!user) {
+      return res.status(404).json({ message: "User account not found" })
+    }
+
+    const isMatched = await bcrypt.compare(password, user.password)
+
+    if (!isMatched) {
+      return res.status(400).json({ message: "Incorrect password or email!" })
+    }
+
+    const accessToken = jwt.sign({ user }, `${process.env.ACCESS_TOKEN}`, {
+      expiresIn: "10m",
+    })
+
+    const refreshToken = jwt.sign({ user }, `${process.env.REFRESH_TOKEN}`, {
+      expiresIn: "20m",
+    })
+
+    return res.status(200).json({
+      message: "Login Successful",
+      accessToken,
+      refreshToken,
+      user,
+    })
+  } catch (error) {
+    return res.status(500).json({ message: error.message })
   }
+}
 
-  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '30m' })
-  res.json({ token })
+module.exports = {
+  registerFunction,
+  loginFunction,
 }
 
 
-
-
-
-
-
-
-
-
-const generateToken = (user) => {
-    return jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '30m' })
-};
-
-/* Middleware to protect routes
-const authMiddleware = (req, res, next) => {
-    const token = req.headers['authorization'];
-    if (token) {
-        jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-            if (err) return res.sendStatus(403);
-            req.user = user;
-            next();
-        });
-    } else {
-        res.sendStatus(401);
-    }
-};
-
-
-
-// CRUD Operations (Create, Read, Update, Delete):
-
-// Creating a new recipe
-const createRecipe = async (req, res) => {
-    try {
-      const recipe = new Recipe({ ...req.body, author: req.userId });
-      await recipe.save();
-      res.status(201).json(recipe);
-    } catch (err) {
-      res.status(500).json({ error: 'Failed to create recipe' });
-    }
-  };
-
-
-  
-  // Update a recipe
-  const updateRecipe = async (req, res) => {
-    try {
-      const recipe = await Recipe.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      res.status(200).json(recipe);
-    } catch (err) {
-      res.status(500).json({ error: 'Failed to update recipe' });
-    }
-  }
-  
-  // Delete a recipe
-  const deleteRecipe = async (req, res) => {
-    try {
-      await Recipe.findByIdAndDelete(req.params.id);
-      res.status(200).json({ message: 'Recipe deleted' });
-    } catch (err) {
-      res.status(500).json({ error: 'Failed to delete recipe' });
-    }
-  }*/
