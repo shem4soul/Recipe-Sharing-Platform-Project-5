@@ -1,6 +1,9 @@
 const mongoose = require("mongoose")
 
-// Middleware for validating search and browse queries
+// Define valid sort fields at the top level
+const validSortFields = ['rating', 'createdAt', 'name']
+
+// Middleware for validating search queries
 const validateSearch = (req, res, next) => {
     const { category, ingredients, preferences } = req.query
 
@@ -13,6 +16,7 @@ const validateSearch = (req, res, next) => {
     next()
 }
 
+// Middleware for validating browse queries
 const validateBrowse = (req, res, next) => {
     const { page, limit, sortBy } = req.query
 
@@ -26,11 +30,9 @@ const validateBrowse = (req, res, next) => {
         return res.status(400).json({
             message: "Limit must be a valid number.",
         })
-        next ()
     }
 
-    // Ensure sortBy is a valid field (e.g., rating, createdAt)
-    const validSortFields = ['rating', 'createdAt', 'name']
+    // Ensure sortBy is a valid field
     if (sortBy && !validSortFields.includes(sortBy)) {
         return res.status(400).json({
             message: "Invalid sort field. Sort by rating, createdAt, or name.",
@@ -39,8 +41,9 @@ const validateBrowse = (req, res, next) => {
 
     next()
 }
+
 module.exports = {
     validateSearch,
     validateBrowse,
-    validSortFields,
+    validSortFields, 
 }

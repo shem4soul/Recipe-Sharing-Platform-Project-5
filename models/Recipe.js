@@ -1,4 +1,3 @@
-
 const mongoose = require("mongoose")
 
 const recipeSchema = new mongoose.Schema({
@@ -7,13 +6,9 @@ const recipeSchema = new mongoose.Schema({
     instructions: { type: String, required: true },
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     categories: [String],
-  }, { timestamps: true, 
-
-  })
-  
+}, { timestamps: true })
 
 
-const Recipe = new mongoose.model('Recipe', recipeSchema)
+const Recipe = mongoose.models.Recipe || mongoose.model('Recipe', recipeSchema)
 module.exports = Recipe
-
 

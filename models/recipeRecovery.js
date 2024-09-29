@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 const mongoosePaginate = require('mongoose-paginate-v2')
+const Recipe = require('../models/Recipe')
+
 
 const recipeSchema = new mongoose.Schema({
     name: {

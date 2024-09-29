@@ -1,5 +1,9 @@
 
-const Recipe = require('../models/recipeRecovery')
+const Recipe = require('../models/Recipe')
+
+
+
+
 
 // Search for recipes based on categories, ingredients, or preferences
 const searchRecipes = async (req, res) => {
@@ -66,11 +70,11 @@ const browseRecipes = async (req, res) => {
             success: false,
             message: 'Error browsing recipes',
             error: error.message,
-        });
+        })
     }
 }
 
 module.exports = {
-    searchRecipe,
+    searchRecipes,
     browseRecipes,
   }

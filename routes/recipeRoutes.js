@@ -1,21 +1,20 @@
-const express = require("express")
-const { validateToken } = require("../middleware/validateAuth")
+const express = require('express')
+
 const {
-  createRecipe,
-  getRecipe,
-  updateRecipe,
-  deleteRecipe,
-} = require("../controllers/recipe")
-const { validateRecipe} = require("../middleware/validation")
+    searchRecipes,
+    browseRecipes
+} = require('../controllers/recipeRecovery')
+const {
+    validateSearch,
+    validateBrowse
+} = require('../middleware/recipeRecovery')
 
 const router = express.Router()
 
-router.post("/create-recipe", validateToken, validateRecipe, createRecipe)
+// Routes
+router.get('/search', validateSearch, searchRecipes)
+router.get('/browse', validateBrowse, browseRecipes)
 
-router.get("/find-recipe", validateToken, getRecipe)
+module.exports = router;
 
-router.put("/update-recipe/:id", validateToken, updateRecipe)
 
-router.delete("/delete-recipe/:id", validateToken, deleteRecipe)
-
-module.exports = router

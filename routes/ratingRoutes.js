@@ -1,4 +1,5 @@
 const express = require("express")
+
 const { validateToken } = require("../middleware/validateAuth")
 const {
   createRating,
@@ -10,12 +11,16 @@ const { validateRating } = require("../middleware/validation")
 
 const router = express.Router()
 
-router.post("/create-rating", validateToken, validateRating, createRating)
+// Create a new rating
+router.post("/ratings", validateToken, validateRating, createRating)
 
-router.get("/find-rating", validateToken, getRating)
+// Retrieve a rating by ID
+router.get("/ratings/:id", validateToken, getRating)
 
-router.put("/update-rating/:id", validateToken, updateRating)
+// Update a rating by ID
+router.put("/ratings/:id", validateToken, validateRating, updateRating)
 
-router.delete("/delete-rating/:id", validateToken, deleteRating)
+// Delete a rating by ID
+router.delete("/ratings/:id", validateToken, deleteRating)
 
 module.exports = router
