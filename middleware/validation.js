@@ -2,14 +2,11 @@ const mongoose = require("mongoose")
 const Rating = require("../models/Rating")
 const Recipe = require("../models/Recipe")
 
-
-
-
 const validateRecipe = async (req, res, next) => {
     const { title, ingredients, instructions, author, categories } = req.body
   
     const errors = []
-  
+
     if (!title) {
         errors.push("Please enter the title")
     }
@@ -37,8 +34,9 @@ const validateRecipe = async (req, res, next) => {
 
 const validateRating = async (req, res, next) => {
     const { userId, recipeId, ratingValue } = req.body
-
+    
     const errors = []
+
     if (!userId) {
         errors.push("Please enter the user ID")
     }
@@ -52,7 +50,28 @@ const validateRating = async (req, res, next) => {
     if (errors.length > 0) {
         return res.status(400).json({
             message: errors,
-        });
+        })
+    }
+
+    next()
+}
+
+const validateCertificate = async (req, res, next) => {
+    const { fullName, email } = req.body
+
+    const errors = []
+
+    if (!fullName) {
+        errors.push("Please enter the full name")
+    }
+    if (!email) {
+        errors.push("Please enter the email")
+    }
+
+    if (errors.length > 0) {
+        return res.status(400).json({
+            message: errors,
+        })
     }
 
     next()
@@ -61,4 +80,5 @@ const validateRating = async (req, res, next) => {
 module.exports = {
     validateRecipe,
     validateRating,
+    validateCertificate
 }

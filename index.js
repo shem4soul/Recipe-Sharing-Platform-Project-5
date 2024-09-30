@@ -5,6 +5,7 @@ const authRoutes = require("./routes/authRoutes")
 const ratingRoutes = require("./routes/ratingRoutes")
 const recipeRecoveryRoutes = require("./routes/recipeRecoveryRoutes")
 const recipeRoutes = require("./routes/recipeRoutes")
+const certificateRoutes = require("./routes/certificateRoutes")
 
 dotenv.config()
 
